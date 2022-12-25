@@ -1,33 +1,36 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import '../App.css';
-function Form() {
+function Form(props) {
     const [patternMsg, setPatternMsg] = useState(false);
     const [patternMsgName, setPatternMsgName] = useState("");
     const [phoneNumData, setPhoneNumData] = useState("");
-    function checkNamePattern(data) {
-        if (data === "") {
+    const [formData, setFormData] = useState({});
+    function checkNamePattern(value) {
+        if (value === "") {
             setPatternMsg(false)
         }
         else {
-            let pattern = /^[a-zA-Z]{1,20}$/;
-            if (pattern.test(data)) {
+            let pattern = /[a-zA-Z, ']{3,20}$/;
+            if (pattern.test(value)) {
                 setPatternMsg(false)
+                setFormData({ ...formData, name: value })
             }
             else {
                 setPatternMsg(true)
-                setPatternMsgName("Name must be in 20 character alphabetic")
+                setPatternMsgName("Name must be 3 to 20 alphabetic character")
             }
         }
     }
-    function checkPhonePattern(data) {
-        if (data === "") {
+    function checkPhonePattern(value) {
+        if (value === "") {
             setPatternMsg(false)
         }
         else {
-            data.length === 3 || data.length === 7 ? setPhoneNumData(data + "-") : setPhoneNumData(data)
+            value.length === 3 || value.length === 7 ? setPhoneNumData(value + "-") : setPhoneNumData(value)
             let pattern = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-            if (pattern.test(data)) {
+            if (pattern.test(value)) {
                 setPatternMsg(false)
+                setFormData({ ...formData, phone: value })
             }
             else {
                 setPatternMsg(true)
@@ -35,38 +38,63 @@ function Form() {
             }
         }
     }
-    function checkEmailPattern(data) {
-        if (data === "") {
+    function checkEmailPattern(value) {
+        if (value === "") {
             setPatternMsg(false)
         }
         else {
             let pattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-            if (pattern.test(data)) {
+            if (pattern.test(value)) {
                 setPatternMsg(false)
+                setFormData({ ...formData, email: value })
             }
             else {
                 setPatternMsg(true)
-                setPatternMsgName("Invalid Email Pattern")
+                setPatternMsgName("Invalid Email Format")
             }
         }
     }
-    function checkHobbiesPattern(data) {
-        if (data === "") {
+    function checkHobbiesPattern(value) {
+        if (value === "") {
             setPatternMsg(false)
         }
         else {
-            let pattern = /^[a-zA-Z]{1,100}$/;
-            if (pattern.test(data)) {
+            let pattern = /^[a-zA-Z ]{1,30}$/;
+            if (pattern.test(value)) {
                 setPatternMsg(false)
+                setFormData({ ...formData, hobbies: value })
             }
             else {
                 setPatternMsg(true)
-                setPatternMsgName("Hobbies must be in 100 character alphabetic")
+                setPatternMsgName("Hobbies must be in 30 character alphabetic")
             }
         }
     }
     function formSubmit(e) {
         e.preventDefault();
+        let passPattern = true
+        if (Object.keys(formData).length === 0) {
+            setPatternMsg(true)
+            setPatternMsgName("No Data Given")
+        }
+        else {
+            let namePattern = /[a-zA-Z, ']{3,20}$/;
+            let phonePattern = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+            let emailPattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+            let hobbiesPattern = /^[a-zA-Z ]{1,30}$/;
+            if (!namePattern.test(formData.name)) passPattern = false
+            if (!phonePattern.test(formData.phone)) passPattern = false
+            if (!emailPattern.test(formData.email)) passPattern = false
+            if (!hobbiesPattern.test(formData.hobbies)) passPattern = false
+            if (passPattern) {
+                setPatternMsg(true)
+                setPatternMsgName("Valid Data")
+            }
+            else {
+                setPatternMsg(true)
+                setPatternMsgName("Invalid Data or not Completed")
+            }
+        }
     }
     return (
         <form onSubmit={formSubmit}>
@@ -89,6 +117,7 @@ function Form() {
             <div className="input-block">
                 <input type="submit" value='Save' />
                 {patternMsg && <span className='wrongPatternMsg'>{patternMsgName}</span>}
+                <button onClick={() => props.showForm(false)}>Cancel</button>
             </div>
         </form>
     );

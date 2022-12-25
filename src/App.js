@@ -1,9 +1,14 @@
 import './App.css';
-import Form from './Components/Form'
+import { useState, createContext } from 'react';
+import Form from './Components/Form';
+import Table from './Components/Table';
+export const UserContext = createContext()
 function App() {
+  const [showForm, setShowForm] = useState(false);
   return (
     <div className="App">
-      <Form />
+      {showForm ? <Form showForm={setShowForm} /> : <button className='btn' onClick={() => setShowForm(true)}>Add</button>}
+      <Table />
     </div>
   );
 }
