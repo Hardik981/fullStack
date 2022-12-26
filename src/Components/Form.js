@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import '../App.css';
 function Form(props) {
     const [patternMsg, setPatternMsg] = useState(false);
     const [patternMsgName, setPatternMsgName] = useState("");
     const [phoneNumData, setPhoneNumData] = useState("");
-    const [formData, setFormData] = useState({});
     function checkNamePattern(value) {
         if (value === "") {
             setPatternMsg(false)
@@ -13,7 +12,7 @@ function Form(props) {
             let pattern = /[a-zA-Z, ']{3,20}$/;
             if (pattern.test(value)) {
                 setPatternMsg(false)
-                setFormData({ ...formData, name: value })
+                props.setFormData({ ...props.formData, name: value })
             }
             else {
                 setPatternMsg(true)
@@ -30,7 +29,7 @@ function Form(props) {
             let pattern = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
             if (pattern.test(value)) {
                 setPatternMsg(false)
-                setFormData({ ...formData, phone: value })
+                props.setFormData({ ...props.formData, phone: value })
             }
             else {
                 setPatternMsg(true)
@@ -46,7 +45,7 @@ function Form(props) {
             let pattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
             if (pattern.test(value)) {
                 setPatternMsg(false)
-                setFormData({ ...formData, email: value })
+                props.setFormData({ ...props.formData, email: value })
             }
             else {
                 setPatternMsg(true)
@@ -62,7 +61,7 @@ function Form(props) {
             let pattern = /^[a-zA-Z ]{1,30}$/;
             if (pattern.test(value)) {
                 setPatternMsg(false)
-                setFormData({ ...formData, hobbies: value })
+                props.setFormData({ ...props.formData, hobbies: value })
             }
             else {
                 setPatternMsg(true)
@@ -73,7 +72,7 @@ function Form(props) {
     function formSubmit(e) {
         e.preventDefault();
         let passPattern = true
-        if (Object.keys(formData).length === 0) {
+        if (Object.keys(props.formData).length === 0) {
             setPatternMsg(true)
             setPatternMsgName("No Data Given")
         }
@@ -82,13 +81,13 @@ function Form(props) {
             let phonePattern = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
             let emailPattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
             let hobbiesPattern = /^[a-zA-Z ]{1,30}$/;
-            if (!namePattern.test(formData.name)) passPattern = false
-            if (!phonePattern.test(formData.phone)) passPattern = false
-            if (!emailPattern.test(formData.email)) passPattern = false
-            if (!hobbiesPattern.test(formData.hobbies)) passPattern = false
+            if (!namePattern.test(props.formData.name)) passPattern = false
+            if (!phonePattern.test(props.formData.phone)) passPattern = false
+            if (!emailPattern.test(props.formData.email)) passPattern = false
+            if (!hobbiesPattern.test(props.formData.hobbies)) passPattern = false
             if (passPattern) {
-                setPatternMsg(true)
-                setPatternMsgName("Valid Data")
+                props.setSendDataNow(true)
+                props.setShowForm(false)
             }
             else {
                 setPatternMsg(true)
@@ -96,6 +95,7 @@ function Form(props) {
             }
         }
     }
+
     return (
         <form onSubmit={formSubmit}>
             <div className="input-block">
@@ -117,7 +117,7 @@ function Form(props) {
             <div className="input-block">
                 <input type="submit" value='Save' />
                 {patternMsg && <span className='wrongPatternMsg'>{patternMsgName}</span>}
-                <button onClick={() => props.showForm(false)}>Cancel</button>
+                <button onClick={() => props.setShowForm(false)}>Cancel</button>
             </div>
         </form>
     );

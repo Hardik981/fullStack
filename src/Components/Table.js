@@ -1,5 +1,5 @@
 import '../App.css';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 function Table() {
     const [data, setData] = useState([{ name: "Hardik", phone: 2, email: "abc@abc.com", hobbies: "cricket", id: 0 },
     { name: "Anand", phone: 6, email: "abc@abc.com", hobbies: "football,swimming,dancing", id: 1 },
@@ -122,6 +122,7 @@ function Table() {
                 <th>Hobbies</th>
                 <th className='tableWarningMsg'>{patternMsgName}</th>
             </tr>
+            {/* TODO Send Data to server when click on 'Done' Button */}
             {data.map(function (d, index) {
                 return (
                     <tr>
