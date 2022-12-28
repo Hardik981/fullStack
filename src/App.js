@@ -10,7 +10,7 @@ function App() {
   const [sendDataNow, setSendDataNow] = useState(false)
   useEffect(() => {
     if (sendDataNow) {
-      fetch('http://127.0.0.1:3001', {
+      fetch('https://frantic-pink-spacesuit.cyclic.app/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
